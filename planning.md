@@ -177,14 +177,41 @@ laravel13api/
 
 ## API Endpoint Summary
 
-| Method    | Endpoint                       | Deskripsi      |
-| --------- | ------------------------------ | -------------- |
-| GET       | `/api/articles`                | List artikel   |
-| POST      | `/api/articles`                | Buat artikel   |
-| GET       | `/api/articles/{id}`           | Detail artikel |
-| PUT/PATCH | `/api/articles/{id}`           | Update artikel |
-| DELETE    | `/api/articles/{id}`           | Hapus artikel  |
-| POST      | `/api/articles/{id}/summarize` | Ringkas dgn AI |
+| Method    | Endpoint                       | Deskripsi      | Rate Limit     |
+| --------- | ------------------------------ | -------------- | -------------- |
+| GET       | `/api/articles`                | List artikel   | 100/min        |
+| POST      | `/api/articles`                | Buat artikel   | 20/min         |
+| GET       | `/api/articles/{id}`           | Detail artikel | 100/min        |
+| PUT/PATCH | `/api/articles/{id}`           | Update artikel | 20/min         |
+| DELETE    | `/api/articles/{id}`           | Hapus artikel  | 20/min         |
+| POST      | `/api/articles/{id}/summarize` | Ringkas dgn AI | 5/min          |
+
+---
+
+### 15. Security — Rate Limiting
+
+Melindungi API dari Brute Force dan DDoS menggunakan middleware `throttle` bawaan Laravel.
+
+**Named Rate Limiters** — `app/Providers/AppServiceProvider.php`
+
+| Limiter  | Batas     | Target Endpoint                     |
+| -------- | --------- | ----------------------------------- |
+| `api`    | 100/min   | Semua route API                     |
+| `write`  | 20/min    | `store`, `update`, `destroy`        |
+| `strict` | 5/min     | `summarize` (AI endpoint mahal)     |
+
+**Penerapan** — `routes/api.php`
+
+```php
+Route::middleware('throttle:api')->group(function () {
+    Route::get('/articles', [ArticleController::class, 'index']);
+    Route::post('/articles', [ArticleController::class, 'store'])->middleware('throttle:write');
+    // ...
+    Route::post('/articles/{article}/summarize', [ArticleController::class, 'summarize'])->middleware('throttle:strict');
+});
+```
+
+Rate limit dihitung per IP (jika tidak login) atau per user ID (jika login via Sanctum).
 
 ---
 
