@@ -1,58 +1,233 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Usage - Postman API Testing
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Base URL: `http://localhost:8000/api`
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 1. Create Article
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Method | URL                     |
+| ------ | ----------------------- |
+| `POST` | `{{base_url}}/articles` |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Headers:**
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+Content-Type: application/json
+Accept: application/json
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**Body (raw JSON):**
 
-## Contributing
+```json
+{
+    "title": "Belajar Laravel 13",
+    "content": "Laravel 13 adalah framework PHP terbaru dengan banyak fitur menarik...",
+    "status": "published"
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Response (201):**
 
-## Code of Conduct
+```json
+{
+    "data": {
+        "id": 1,
+        "title": "Belajar Laravel 13",
+        "content": "Laravel 13 adalah framework PHP terbaru dengan banyak fitur menarik...",
+        "status": "published",
+        "created_at": "2026-07-21T00:00:00.000000Z",
+        "updated_at": "2026-07-21T00:00:00.000000Z"
+    }
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 2. List All Articles
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Method | URL                     |
+| ------ | ----------------------- |
+| `GET`  | `{{base_url}}/articles` |
 
-## License
+**Response (200):**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "Belajar Laravel 13",
+            "content": "Laravel 13 adalah framework PHP terbaru...",
+            "status": "published",
+            "created_at": "2026-07-21T00:00:00.000000Z",
+            "updated_at": "2026-07-21T00:00:00.000000Z"
+        }
+    ],
+    "links": {
+        "first": "http://localhost:8000/api/articles?page=1",
+        "last": "http://localhost:8000/api/articles?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "per_page": 10,
+        "to": 1,
+        "total": 1
+    }
+}
+```
+
+**Query Params (opsional):**
+| Param | Value | Keterangan |
+|-------|-------|------------|
+| `page` | `2` | Halaman |
+| `per_page` | `5` | Item per halaman |
+
+---
+
+## 3. Show Single Article
+
+| Method | URL                       |
+| ------ | ------------------------- |
+| `GET`  | `{{base_url}}/articles/1` |
+
+**Response (200):**
+
+```json
+{
+    "data": {
+        "id": 1,
+        "title": "Belajar Laravel 13",
+        "content": "Laravel 13 adalah framework PHP terbaru...",
+        "status": "published",
+        "created_at": "2026-07-21T00:00:00.000000Z",
+        "updated_at": "2026-07-21T00:00:00.000000Z"
+    }
+}
+```
+
+---
+
+## 4. Update Article
+
+| Method | URL                       |
+| ------ | ------------------------- |
+| `PUT`  | `{{base_url}}/articles/1` |
+
+**Headers:**
+
+```
+Content-Type: application/json
+Accept: application/json
+```
+
+**Body (raw JSON):**
+
+```json
+{
+    "title": "Belajar Laravel 13 (Updated)",
+    "status": "draft"
+}
+```
+
+**Response (200):**
+
+```json
+{
+    "data": {
+        "id": 1,
+        "title": "Belajar Laravel 13 (Updated)",
+        "content": "Laravel 13 adalah framework PHP terbaru...",
+        "status": "draft",
+        "created_at": "2026-07-21T00:00:00.000000Z",
+        "updated_at": "2026-07-21T00:00:00.000000Z"
+    }
+}
+```
+
+> `PATCH` juga bisa digunakan dengan cara yang sama.
+
+---
+
+## 5. Delete Article
+
+| Method   | URL                       |
+| -------- | ------------------------- |
+| `DELETE` | `{{base_url}}/articles/1` |
+
+**Response (200):**
+
+```json
+{
+    "message": "Article deleted"
+}
+```
+
+---
+
+## 6. Summarize with AI
+
+| Method | URL                                 |
+| ------ | ----------------------------------- |
+| `POST` | `{{base_url}}/articles/1/summarize` |
+
+**Headers:**
+
+```
+Accept: application/json
+```
+
+**Response (200):**
+
+```json
+{
+    "data": {
+        "id": 1,
+        "summary": "Artikel ini membahas tentang Laravel 13, framework PHP terbaru yang memiliki berbagai fitur menarik untuk pengembangan web modern."
+    }
+}
+```
+
+> **Catatan:** Menggunakan model `opencode` pada app/Http/Controllers/ArticleController.php via endpoint `http://localhost:20128/v1` (9router).
+
+---
+
+## Setup Collection di Postman
+
+### 1. Buat Collection Baru
+
+- Klik **New > Collection**
+- Nama: `Laravel 13 API`
+
+### 2. Set Variable Collection
+
+Klik **Variables** pada collection, tambahkan:
+
+| Variable   | Initial Value               | Current Value               |
+| ---------- | --------------------------- | --------------------------- |
+| `base_url` | `http://localhost:8000/api` | `http://localhost:8000/api` |
+
+### 3. Buat Request
+
+Klik **Add Request** di dalam collection, isi:
+
+| Request        | Method   | URL                                 |
+| -------------- | -------- | ----------------------------------- |
+| Create Article | `POST`   | `{{base_url}}/articles`             |
+| List Articles  | `GET`    | `{{base_url}}/articles`             |
+| Show Article   | `GET`    | `{{base_url}}/articles/1`           |
+| Update Article | `PUT`    | `{{base_url}}/articles/1`           |
+| Delete Article | `DELETE` | `{{base_url}}/articles/1`           |
+| Summarize      | `POST`   | `{{base_url}}/articles/1/summarize` |
+
+### 4. Run Server
+
+```bash
+php artisan serve
+```
+
+Akses di `http://localhost:8000`.
