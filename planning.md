@@ -4,7 +4,7 @@
 
 - **Framework:** Laravel 13
 - **Database:** MySQL (`laravel13api`, user: `root`, password: ``)
-- **AI SDK:** OpenAI / Laravel AI
+- **AI SDK:** Opecode API / 9router
 
 ---
 
